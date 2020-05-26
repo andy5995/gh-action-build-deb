@@ -11,5 +11,6 @@ dpkg-buildpackage $@
 # Output the filename
 cd ..
 ls -l
+mkdir -p /github/workspace/output/
 # Move the built package into the Docker mounted workspace
-mv -v *.{deb,dsc,changes,buildinfo,tar.xz} /github/workspace/
+mv -v *.{deb,dsc,changes,buildinfo,tar.xz} /github/workspace/output/
