@@ -1,4 +1,4 @@
-# Build Debian Package
+# GitHub Action to build Debian packages
 
 This is a [GitHub Action](https://github.com/features/actions) that will
 build a [Debian package](https://en.wikipedia.org/wiki/Deb_%28file_format%29)
