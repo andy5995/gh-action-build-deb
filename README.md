@@ -1,4 +1,4 @@
-# Build Debian Package
+ # Build Debian Package
 
 This is a [GitHub Action](https://github.com/features/actions) that will
 build a [Debian package](https://en.wikipedia.org/wiki/Deb_%28file_format%29)
@@ -41,12 +41,14 @@ currently supported:
 * `ubuntu-focal` aka [Ubuntu 20.04 LTS](https://en.wikipedia.org/wiki/Ubuntu_version_history#2004)
 * `ubuntu-groovy` aka [Ubuntu 20.10](https://en.wikipedia.org/wiki/Ubuntu_version_history#2010) (unreleased)
 
-== Related actions ==
+## Related actions
+
 * [gh-action-auto-dch](https://github.com/legoktm/gh-action-auto-dch) automatically adds a changelog entry based on the git information and distro.
 * [gh-action-dput](https://github.com/legoktm/gh-action-dput) uploads built packages to a PPA or repository.
 
 
-== Multiple OS versions ==
+## Multiple OS versions
+
 A multi-OS version package building matrix might look like:
 
 ```yaml
@@ -95,7 +97,8 @@ jobs:
           path: output
 ```
 
-== License ==
+## License
+
 Copyright © 2020 Kunal Mehta under the GPL, version 3 or any later version.
 Originally based off of the [nylas/gh-action-build-deb-buster](https://github.com/nylas/gh-action-build-deb-buster)
 action, which is Copyright © 2020 David Baumgold under the MIT License.
