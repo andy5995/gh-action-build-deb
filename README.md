@@ -1,16 +1,13 @@
-# Build Debian Package: Buster
+# Build Debian Package
 
 This is a [GitHub Action](https://github.com/features/actions) that will
 build a [Debian package](https://en.wikipedia.org/wiki/Deb_%28file_format%29)
-(`.deb` file) using the latest version of [Debian Buster](https://www.debian.org/releases/buster/).
+(`.deb` file) for various Debian or Ubuntu versions.
 
 ## Usage
 
 ```yaml
-on:
-  push:
-    branches:
-      - master
+on: [push]
 
 jobs:
   build-deb:
@@ -18,70 +15,87 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: singingwolfboy/build-dpkg-buster@v1
-        id: build
+      - uses: legoktm/gh-action-build-deb@debian-buster
+        id: build-debian-buster
         with:
-          args: --unsigned-source --unsigned-changes
+          args: --nosign
 
       - uses: actions/upload-artifact@v1
         with:
-          name: ${{ steps.build.outputs.filename }}
-          path: ${{ steps.build.outputs.filename }}
+          name: Packages for buster
+          path: output
 ```
 
-This Action wraps the [`dpkg-buildpackage`](https://manpages.debian.org/buster/dpkg-dev/dpkg-buildpackage.1.en.html)
-command. To use it, you must have a `debian` directory at the top of
-your repository, with all the files that `dpkg-buildpackage` expects.
+This Action will build both a source package and then a binary package and place
+them in a `output/` directory.
 
-This Action does the following things inside a Docker container:
+Each Debian/Ubuntu version to build for has its own branch. The following are
+currently supported:
 
-1. Call [`mk-build-deps`](http://manpages.ubuntu.com/manpages/buster/man1/mk-build-deps.1.html)
-   to ensure that the build dependencies defined the `debian/control` file
-   are installed in the Docker image.
-2. Call [`dpkg-buildpackage`](https://manpages.debian.org/buster/dpkg-dev/dpkg-buildpackage.1.en.html)
-   with whatever arguments are passed to the
-   [`args` input](https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstepswithargs) in the step definition.
-3. Move the resulting `*.deb` files into the top level of your repository,
-   so that other GitHub Actions steps can process them futher.
-4. Set the `filename` and `filename-dbgsym`
-   [outputs](https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjobs_idoutputs),
-   so that other GitHub Actions steps can easily reference
-   the resulting files.
+* `debian-buster` aka [Debian 9](https://www.debian.org/releases/buster/)
+* `debian-bullseye` aka Debian 10 (currently testing, still unreleased)
+* `debian-unstable` aka Debian Sid
 
-## Related
+* `ubuntu-bionic` aka [Ubuntu 18.04 LTS](https://en.wikipedia.org/wiki/Ubuntu_version_history#1804)
+* `ubuntu-eoan` aka [Ubuntu 19.10](https://en.wikipedia.org/wiki/Ubuntu_version_history#1910)
+* `ubuntu-focal` aka [Ubuntu 20.04 LTS](https://en.wikipedia.org/wiki/Ubuntu_version_history#2004)
+* `ubuntu-groovy` aka [Ubuntu 20.10](https://en.wikipedia.org/wiki/Ubuntu_version_history#2010) (unreleased)
 
-If you need to build Debian packages on a different release, check out the following:
+== Related actions ==
+* [gh-action-auto-dch](https://github.com/legoktm/gh-action-auto-dch) automatically adds a changelog entry based on the git information and distro.
+* [gh-action-dput](https://github.com/legoktm/gh-action-dput) uploads built packages to a PPA or repository.
 
-- [singingwolfboy/build-dpkg-stretch](https://github.com/singingwolfboy/build-dpkg-stretch)
 
-If you want to upload the package to [Amazon S3](https://aws.amazon.com/s3/)
-instead of using
-[`actions/upload-artifact`](https://github.com/actions/upload-artifact),
-you may want to use
-[the official Docker image for the AWS CLI](https://hub.docker.com/r/amazon/aws-cli),
-like this:
+== Multiple OS versions ==
+A multi-OS version package building matrix might look like:
 
 ```yaml
+on: [push, pull_request]
+
 jobs:
   build-deb:
     runs-on: ubuntu-latest
+    strategy:
+      matrix: 
+        distro: [ubuntu-focal, ubuntu-eoan, ubuntu-bionic, debian-buster]
     steps:
       - uses: actions/checkout@v2
 
-      - uses: singingwolfboy/build-dpkg-buster@v1
-        id: build
+      - uses: legoktm/gh-action-build-deb@ubuntu-focal
+        if: matrix.distro == 'ubuntu-focal'
+        name: Build package for ubuntu-focal
+        id: build-ubuntu-focal
         with:
-          args: --unsigned-source --unsigned-changes
+          args: --no-sign
 
-      - uses: docker://amazon/aws-cli:latest
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - uses: legoktm/gh-action-build-deb@ubuntu-eoan
+        if: matrix.distro == 'ubuntu-eoan'
+        name: Build package for ubuntu-eoan
+        id: build-ubuntu-eoan
         with:
-          args: >-
-            s3
-            cp
-            ${{ steps.build.outputs.filename }}
-            s3://my-bucket-name/${{ steps.build.outputs.filename }}
-            --content-type "application/vnd.debian.binary-package"
+          args: --no-sign
+
+      - uses: legoktm/gh-action-build-deb@ubuntu-bionic
+        if: matrix.distro == 'ubuntu-bionic'
+        name: Build package for ubuntu-bionic
+        id: build-ubuntu-bionic
+        with:
+          args: --no-sign
+
+      - uses: legoktm/gh-action-build-deb@debian-buster
+        if: matrix.distro == 'debian-buster'
+        name: Build package for debian-buster
+        id: build-debian-buster
+        with:
+          args: --no-sign
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Packages for ${{ matrix.distro }}
+          path: output
 ```
+
+== License ==
+Copyright © 2020 Kunal Mehta under the GPL, version 3 or any later version.
+Originally based off of the [nylas/gh-action-build-deb-buster](https://github.com/nylas/gh-action-build-deb-buster)
+action, which is Copyright © 2020 David Baumgold under the MIT License.
