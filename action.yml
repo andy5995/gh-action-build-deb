@@ -1,5 +1,9 @@
 name: 'Build Debian package'
 description: 'Build a Debian package'
+inputs:
+  args:
+    description: Arguments to pass to dpkg-buildpackage
+    required: false
 
 runs:
   using: docker
