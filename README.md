@@ -41,7 +41,11 @@ currently supported:
 * `ubuntu-focal` aka [Ubuntu 20.04 LTS](https://en.wikipedia.org/wiki/Ubuntu_version_history#2004)
 * `ubuntu-groovy` aka [Ubuntu 20.10](https://en.wikipedia.org/wiki/Ubuntu_version_history#2010) (unreleased)
 
-The optional `args` input will be passed to `dpkg-buildpackage`.
+## Configuration
+
+* `args`: arguments to pass to `dpkg-buildpackage`
+* `sources`: repositories to add to `/etc/apt/sources.list`
+* `ppa`: Name of Ubuntu PPA to add (no ppa: prefix)
 
 ## Related actions
 
