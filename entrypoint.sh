@@ -2,11 +2,12 @@
 set -e
 if [ -n "$INPUT_SOURCES" ]; then
     echo $INPUT_SOURCES >> /etc/apt/sources.list
-    apt-get update;
 fi
 if [ -n "$INPUT_PPA" ]; then
     add-apt-repository "ppa:$INPUT_PPA" -y
 fi
+
+apt-get update
 
 # Set the install command to be used by mk-build-deps (use --yes for non-interactive)
 install_tool="apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes"
