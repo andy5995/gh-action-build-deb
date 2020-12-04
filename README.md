@@ -39,7 +39,8 @@ currently supported:
 * `ubuntu-bionic` aka [Ubuntu 18.04 LTS](https://en.wikipedia.org/wiki/Ubuntu_version_history#1804)
 * `ubuntu-eoan` aka [Ubuntu 19.10](https://en.wikipedia.org/wiki/Ubuntu_version_history#1910)
 * `ubuntu-focal` aka [Ubuntu 20.04 LTS](https://en.wikipedia.org/wiki/Ubuntu_version_history#2004)
-* `ubuntu-groovy` aka [Ubuntu 20.10](https://en.wikipedia.org/wiki/Ubuntu_version_history#2010) (unreleased)
+* `ubuntu-groovy` aka [Ubuntu 20.10](https://en.wikipedia.org/wiki/Ubuntu_version_history#2010)
+* `ubuntu-hirsute` aka [Ubuntu 21.04](https://en.wikipedia.org/wiki/Ubuntu_version_history#2104)
 
 ## Configuration
 
