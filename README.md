@@ -32,8 +32,8 @@ them in a `output/` directory.
 Each Debian/Ubuntu version to build for has its own branch. The following are
 currently supported:
 
-* `debian-buster` aka [Debian 9](https://www.debian.org/releases/buster/)
-* `debian-bullseye` aka Debian 10 (currently testing, still unreleased)
+* `debian-buster` aka [Debian 10](https://www.debian.org/releases/buster/)
+* `debian-bullseye` aka Debian 11 (currently testing, still unreleased)
 * `debian-unstable` aka Debian Sid
 
 * `ubuntu-bionic` aka [Ubuntu 18.04 LTS](https://en.wikipedia.org/wiki/Ubuntu_version_history#1804)
@@ -41,6 +41,7 @@ currently supported:
 * `ubuntu-focal` aka [Ubuntu 20.04 LTS](https://en.wikipedia.org/wiki/Ubuntu_version_history#2004)
 * `ubuntu-groovy` aka [Ubuntu 20.10](https://en.wikipedia.org/wiki/Ubuntu_version_history#2010)
 * `ubuntu-hirsute` aka [Ubuntu 21.04](https://en.wikipedia.org/wiki/Ubuntu_version_history#2104)
+* `ubuntu-impish` aka [Ubuntu 21.10](https://en.wikipedia.org/wiki/Ubuntu_version_history#2110)
 
 ## Configuration
 
