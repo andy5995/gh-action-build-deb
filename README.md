@@ -42,6 +42,7 @@ currently supported:
 * `ubuntu-groovy` aka [Ubuntu 20.10](https://en.wikipedia.org/wiki/Ubuntu_version_history#2010)
 * `ubuntu-hirsute` aka [Ubuntu 21.04](https://en.wikipedia.org/wiki/Ubuntu_version_history#2104)
 * `ubuntu-impish` aka [Ubuntu 21.10](https://en.wikipedia.org/wiki/Ubuntu_version_history#2110)
+* `ubuntu-jammy` aka [Ubuntu 22.04](https://en.wikipedia.org/wiki/Ubuntu_version_history#2204)
 
 ## Configuration
 
