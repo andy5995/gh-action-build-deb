@@ -46,6 +46,12 @@ jobs:
       with:
         repository: theimpossibleastronaut/rmw
 
+    - uses: ./
+      id: build-debian-bookworm
+      with:
+        args: --no-sign
+        platform: ${{ matrix.platform }}
+
     - name: Copy debian directory
       run: cp -a packaging/debian .
     - name: Create sha256sum
