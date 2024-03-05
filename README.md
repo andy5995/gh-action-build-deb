@@ -25,7 +25,7 @@ jobs:
         with:
           args: --no-sign
 
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v4
         with:
           name: Packages for bookworm
           path: output

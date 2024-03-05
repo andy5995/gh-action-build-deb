@@ -1,0 +1,58 @@
+name: Test Action
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches: trunk
+    paths:
+    - 'entrypoint.sh'
+    - '**Dockerfile'
+    - '!**.yml'
+    - '!**.md'
+    - 'action.yml'
+    - 'test.yml'
+  pull_request:
+    branches: trunk
+    - 'entrypoint.sh'
+    - '**Dockerfile'
+    - '!**.yml'
+    - '!**.md'
+    - 'action.yml'
+    - 'test.yml'
+
+env:
+  VERSION: 0.9.2
+
+jobs:
+  build-deb:
+    strategy:
+      matrix:
+        - linux/amd64
+        - linux/arm64
+        - linux/ppc64le
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Checkout rmw
+      uses: actions/checkout@v4
+      with:
+        repository: theimpossibleastronaut/rmw
+
+    - name: Copy debian directory
+      run: cp -a packaging/debian .
+    - uses: ./
+      id: build-debian-bookworm
+      with:
+        args: --no-sign
+    - name: Create sha256sum
+      run: |
+        cd output
+        # sha256sum rmw_${VERSION}_amd64.deb > ../rmw_${VERSION}_amd64.deb.sha256sum
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: rmw_debian_pkg
+        path: |
+          output/*.deb
+        if-no-files-found: error
