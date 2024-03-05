@@ -2,7 +2,12 @@
 
 This is a [GitHub Action](https://github.com/features/actions) that will
 build a [Debian package](https://en.wikipedia.org/wiki/Deb_%28file_format%29)
-(`.deb` file) for various Debian or Ubuntu versions.
+(`.deb` file) for Debian bookworm.
+
+This is a fork of
+[legoktm/gh-action-build-deb](https://github.com/legoktm/gh-action-build-deb).
+
+Note this Action is not yet complete.
 
 ## Usage
 
@@ -13,36 +18,21 @@ jobs:
   build-deb:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - uses: legoktm/gh-action-build-deb@debian-buster
-        id: build-debian-buster
+      - uses: andy5995/gh-action-build-deb@v1
+        id: build-debian-bookworm
         with:
-          args: --nosign
+          args: --no-sign
 
       - uses: actions/upload-artifact@v1
         with:
-          name: Packages for buster
+          name: Packages for bookworm
           path: output
 ```
 
 This Action will build both a source package and then a binary package and place
 them in a `output/` directory.
-
-Each Debian/Ubuntu version to build for has its own branch. The following are
-currently supported:
-
-* `debian-buster` aka [Debian 10](https://www.debian.org/releases/buster/)
-* `debian-bullseye` aka Debian 11 (currently testing, still unreleased)
-* `debian-unstable` aka Debian Sid
-
-* `ubuntu-bionic` aka [Ubuntu 18.04 LTS](https://en.wikipedia.org/wiki/Ubuntu_version_history#1804)
-* `ubuntu-eoan` aka [Ubuntu 19.10](https://en.wikipedia.org/wiki/Ubuntu_version_history#1910)
-* `ubuntu-focal` aka [Ubuntu 20.04 LTS](https://en.wikipedia.org/wiki/Ubuntu_version_history#2004)
-* `ubuntu-groovy` aka [Ubuntu 20.10](https://en.wikipedia.org/wiki/Ubuntu_version_history#2010)
-* `ubuntu-hirsute` aka [Ubuntu 21.04](https://en.wikipedia.org/wiki/Ubuntu_version_history#2104)
-* `ubuntu-impish` aka [Ubuntu 21.10](https://en.wikipedia.org/wiki/Ubuntu_version_history#2110)
-* `ubuntu-jammy` aka [Ubuntu 22.04](https://en.wikipedia.org/wiki/Ubuntu_version_history#2204)
 
 ## Configuration
 
@@ -54,57 +44,6 @@ currently supported:
 
 * [gh-action-auto-dch](https://github.com/legoktm/gh-action-auto-dch) automatically adds a changelog entry based on the git information and distro.
 * [gh-action-dput](https://github.com/legoktm/gh-action-dput) uploads built packages to a PPA or repository.
-
-
-## Multiple OS versions
-
-A multi-OS version package building matrix might look like:
-
-```yaml
-on: [push, pull_request]
-
-jobs:
-  build-deb:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix: 
-        distro: [ubuntu-focal, ubuntu-eoan, ubuntu-bionic, debian-buster]
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: legoktm/gh-action-build-deb@ubuntu-focal
-        if: matrix.distro == 'ubuntu-focal'
-        name: Build package for ubuntu-focal
-        id: build-ubuntu-focal
-        with:
-          args: --no-sign
-
-      - uses: legoktm/gh-action-build-deb@ubuntu-eoan
-        if: matrix.distro == 'ubuntu-eoan'
-        name: Build package for ubuntu-eoan
-        id: build-ubuntu-eoan
-        with:
-          args: --no-sign
-
-      - uses: legoktm/gh-action-build-deb@ubuntu-bionic
-        if: matrix.distro == 'ubuntu-bionic'
-        name: Build package for ubuntu-bionic
-        id: build-ubuntu-bionic
-        with:
-          args: --no-sign
-
-      - uses: legoktm/gh-action-build-deb@debian-buster
-        if: matrix.distro == 'debian-buster'
-        name: Build package for debian-buster
-        id: build-debian-buster
-        with:
-          args: --no-sign
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: Packages for ${{ matrix.distro }}
-          path: output
-```
 
 ## License
 
