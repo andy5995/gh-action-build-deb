@@ -30,6 +30,7 @@ jobs:
   build-deb:
     strategy:
       matrix:
+        platform:
         - linux/amd64
         - linux/arm64
         - linux/ppc64le
@@ -46,6 +47,7 @@ jobs:
       id: build-debian-bookworm
       with:
         args: --no-sign
+        platform: ${{ matrix.platform }}
     - name: Create sha256sum
       run: |
         cd output
