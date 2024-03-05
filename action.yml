@@ -12,11 +12,30 @@ inputs:
   args:
     description: Arguments to pass to dpkg-buildpackage
     required: false
+  platform:
+    description: Platform to build on
+    required: false
+    default: linux/amd64
 
 runs:
-  using: docker
-  image: Dockerfile
+  using: 'composite'
+  steps:
+    - name: Setup QEMU
+      if: ${{ !contains(inputs.platform, 'amd64') }}
+      uses: docker/setup-qemu-action@v3
+    - name: Build Debian package
+      run: |
+        docker run --rm \
+          -v ${{ github.workspace }}:/workspace \
+          -w /workspace \
+          --platform ${{ inputs.platform }} \
+          -e INPUT_SOURCES=${{ inputs.sources }} \
+          -e INPUT_PPA=${{ inputs.ppa }} \
+          -e INPUT_ARGS="${{ inputs.args }}" \
+          ghcr.io/andy5995/gh-action-build-deb:bookworm \
+          entrypoint.sh
+      shell: bash
 
 branding:
-  icon: package
-  color: gray-dark
+  icon: 'package'
+  color: 'gray-dark'
