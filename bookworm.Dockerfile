@@ -10,4 +10,6 @@ RUN \
     devscripts equivs \
     software-properties-common
 
-CMD ["/bin/sh","-l"]
+COPY entrypoint.sh /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]

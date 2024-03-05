@@ -23,8 +23,6 @@ runs:
     - name: Setup QEMU
       if: ${{ !contains(inputs.platform, 'amd64') }}
       uses: docker/setup-qemu-action@v3
-    - uses: ./
-    - uses: actions/checkout@v4
     - name: Build Debian package
       run: |
         docker run --rm \
