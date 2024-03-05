@@ -36,17 +36,12 @@ jobs:
         - linux/ppc64le
     runs-on: ubuntu-20.04
     steps:
-    - uses: ./
-      id: build-debian-bookworm
-      with:
-        args: --no-sign
-        platform: ${{ matrix.platform }}
     - name: Checkout rmw
       uses: actions/checkout@v4
       with:
         repository: theimpossibleastronaut/rmw
-
-    - uses: ./
+    - name: Use action from self
+      uses: ./
       id: build-debian-bookworm
       with:
         args: --no-sign
