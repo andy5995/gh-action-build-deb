@@ -36,6 +36,11 @@ jobs:
         - linux/ppc64le
     runs-on: ubuntu-20.04
     steps:
+    - uses: ./
+      id: build-debian-bookworm
+      with:
+        args: --no-sign
+        platform: ${{ matrix.platform }}
     - name: Checkout rmw
       uses: actions/checkout@v4
       with:
@@ -43,11 +48,6 @@ jobs:
 
     - name: Copy debian directory
       run: cp -a packaging/debian .
-    - uses: ./
-      id: build-debian-bookworm
-      with:
-        args: --no-sign
-        platform: ${{ matrix.platform }}
     - name: Create sha256sum
       run: |
         cd output
