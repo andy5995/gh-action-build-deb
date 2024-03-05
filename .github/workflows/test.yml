@@ -15,6 +15,7 @@ on:
     - 'test.yml'
   pull_request:
     branches: trunk
+    paths:
     - 'entrypoint.sh'
     - '**Dockerfile'
     - '!**.yml'
