@@ -40,6 +40,11 @@ jobs:
       uses: actions/checkout@v4
       with:
         repository: theimpossibleastronaut/rmw
+    - name: Checkout canfigger
+      uses: actions/checkout@v4
+      with:
+        repository: andy5995/canfigger
+        path: subprojects/canfigger
     - name: Use action from self
       uses: ./
       id: build-debian-bookworm
