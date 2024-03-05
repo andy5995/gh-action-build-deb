@@ -32,7 +32,6 @@ runs:
           -e INPUT_SOURCES="${{ inputs.sources }}" \
           -e INPUT_PPA="${{ inputs.ppa }}" \
           -e INPUT_ARGS="${{ inputs.args }}" \
-          --entrypoint /workspace/entrypoint.sh \
           ghcr.io/andy5995/gh-action-build-deb:bookworm
       shell: bash
 
