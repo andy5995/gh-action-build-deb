@@ -32,8 +32,8 @@ runs:
           -e INPUT_SOURCES="${{ inputs.sources }}" \
           -e INPUT_PPA="${{ inputs.ppa }}" \
           -e INPUT_ARGS="${{ inputs.args }}" \
-          ghcr.io/andy5995/gh-action-build-deb:bookworm \
-          entrypoint.sh
+          --entrypoint entrypoint.sh \
+          ghcr.io/andy5995/gh-action-build-deb:bookworm
       shell: bash
 
 branding:
