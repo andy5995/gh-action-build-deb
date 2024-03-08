@@ -15,7 +15,7 @@ inputs:
   platform:
     description: Platform to build on
     required: false
-    default: linux/amd64
+    default: amd64
 
 runs:
   using: 'composite'
@@ -28,7 +28,7 @@ runs:
         docker run --rm \
           -v ${{ github.workspace }}:/workspace \
           -w /workspace \
-          --platform ${{ inputs.platform }} \
+          --platform linux/${{ inputs.platform }} \
           -e INPUT_SOURCES="${{ inputs.sources }}" \
           -e INPUT_PPA="${{ inputs.ppa }}" \
           -e INPUT_ARGS="${{ inputs.args }}" \
