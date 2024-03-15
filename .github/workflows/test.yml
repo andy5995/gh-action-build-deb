@@ -38,6 +38,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         repository: theimpossibleastronaut/rmw
+        ref: rmw-0.9.2
 
     - name: Copy debian directory
       run: cp -a packaging/debian .
