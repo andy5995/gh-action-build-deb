@@ -1,6 +1,7 @@
 FROM debian:bookworm
 
-ENV DEBIAN_FRONTEND=noninteractive
+ARG DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=$DEBIAN_FRONTEND
 
 RUN \
   apt update && apt upgrade -y && \
