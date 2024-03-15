@@ -11,12 +11,7 @@ RUN \
     devscripts equivs \
     software-properties-common
 
-RUN \
-  echo 'deb-src http://deb.debian.org/debian/ bookworm main contrib \
-  deb-src http://deb.debian.org/debian/ bookworm-updates main contrib \
-  deb-src http://deb.debian.org/debian/ bookworm-backports main contrib \
-  deb-src http://security.debian.org/debian-security/ bookworm-security main contrib \
-  ' >> /etc/apt/sources.list
+RUN sed -i 's/Types: deb/Types: deb deb-src/' /etc/apt/sources.list.d/debian.sources
 
 COPY entrypoint.sh /entrypoint.sh
 
