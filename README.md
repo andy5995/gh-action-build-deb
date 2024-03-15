@@ -16,7 +16,7 @@ package must be in the source root directory (in the example below, it's
 copied to the source root directory before the action is run).
 
 ## Example
-
+<!-- Don't forget to check the version after the action when copying and pasting -->
 ```yaml
 on: [push]
 
@@ -36,7 +36,7 @@ jobs:
     - name: Copy debian directory
       run: cp -a packaging/debian .
 
-    - uses: andy5995/gh-action-build-deb@trunk
+    - uses: andy5995/gh-action-build-deb@v1
       with:
         args: --no-sign
         platform: ${{ matrix.platform }}
@@ -72,9 +72,11 @@ jobs:
   sources:
     description: 'Any extra sources to add to apt'
     required: false
+    default: ''
   ppa:
     description: 'An extra PPA to add to apt (no ppa: prefix)'
     required: false
+    default: ''
   args:
     description: 'Arguments to pass to dpkg-buildpackage'
     required: false
