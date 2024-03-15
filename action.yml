@@ -1,5 +1,5 @@
-name: 'Build Debian package'
-description: 'Build a Debian package'
+name: 'Build Debian package on multiple architectures'
+description: 'Build Debian package on multiple architectures'
 inputs:
   sources:
     description: 'Any extra sources to add to apt'
