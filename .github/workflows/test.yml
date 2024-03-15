@@ -43,7 +43,9 @@ jobs:
       run: cp -a packaging/debian .
 
     - uses: actions/checkout@v4
-    - uses: ./
+      with:
+        path: action
+    - uses: ./action
       with:
         args: --no-sign
         platform: ${{ matrix.platform }}

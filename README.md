@@ -70,16 +70,16 @@ jobs:
 
 ```
   sources:
-    description: Any extra sources to add to apt
+    description: 'Any extra sources to add to apt'
     required: false
   ppa:
-    description: An extra PPA to add to apt (no ppa: prefix)
+    description: 'An extra PPA to add to apt (no ppa: prefix)'
     required: false
   args:
-    description: Arguments to pass to dpkg-buildpackage
+    description: 'Arguments to pass to dpkg-buildpackage'
     required: false
   platform:
-    description: Target architecture
+    description: 'Target architecture'
     required: false
     default: 'amd64'
 ```
