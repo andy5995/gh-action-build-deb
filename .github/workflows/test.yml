@@ -23,45 +23,42 @@ on:
     - 'action.yml'
     - 'test.yml'
 
-env:
-  VERSION: 0.9.2
-
 jobs:
   build-deb:
     strategy:
       matrix:
         platform:
-        - linux/amd64
-        - linux/arm64
-        - linux/ppc64le
-    runs-on: ubuntu-20.04
+          - amd64
+          - arm64
+          - 386
+
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout rmw
       uses: actions/checkout@v4
       with:
         repository: theimpossibleastronaut/rmw
-    - name: Checkout canfigger
-      uses: actions/checkout@v4
-      with:
-        repository: andy5995/canfigger
-        path: subprojects/canfigger
-    - name: Use action from self
-      uses: ./
-      id: build-debian-bookworm
+
+    - name: Copy debian directory
+      run: cp -a packaging/debian .
+
+    - uses: ./
       with:
         args: --no-sign
         platform: ${{ matrix.platform }}
 
-    - name: Copy debian directory
-      run: cp -a packaging/debian .
     - name: Create sha256sum
       run: |
+        DEB_FILENAME=$(basename `find output/*deb`)
+        echo "DEB_FILENAME=$DEB_FILENAME" >> $GITHUB_ENV
         cd output
-        # sha256sum rmw_${VERSION}_amd64.deb > ../rmw_${VERSION}_amd64.deb.sha256sum
+        sha256sum "$DEB_FILENAME" > "../$DEB_FILENAME.sha256sum"
+
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: rmw_debian_pkg
+        name: ${{ env.DEB_FILENAME }}
         path: |
           output/*.deb
+          *deb.sha256sum
         if-no-files-found: error
