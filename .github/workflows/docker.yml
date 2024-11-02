@@ -7,13 +7,18 @@ on:
     - '**Dockerfile'
     - '**docker.yml'
     - 'entrypoint.sh'
+  pull_request:
+    branches: trunk
+    paths:
+    - '**Dockerfile'
+    - '**docker.yml'
+    - 'entrypoint.sh'
   workflow_dispatch:
   schedule:
     - cron: '30 11 20 */3 *'
 
-
 env:
-  REGISTRY_IMAGE: ghcr.io/${{ github.repository_owner }}/gh-action-build-deb
+  REGISTRY_IMAGE: ghcr.io/${{ github.repository }}
 
 jobs:
   build:
@@ -46,6 +51,10 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY_IMAGE }}
+          tags: |
+            type=ref,event=pr,prefix=pr-,enable=${{ github.event_name == 'pull_request' }}
+            type=raw,value=latest,enable=${{ github.event_name != 'pull_request' }}
+            type=raw,value=bookworm,enable=${{ github.event_name != 'pull_request' }}
 
       - if: ${{ matrix.platform != 'linux/amd64' }}
         name: Set up QEMU
@@ -109,8 +118,9 @@ jobs:
         with:
           images: ${{ env.REGISTRY_IMAGE }}
           tags: |
-            type=raw,value=latest
-            type=raw,value=bookworm
+            type=ref,event=pr,prefix=pr-,enable=${{ github.event_name == 'pull_request' }}
+            type=raw,value=latest,enable=${{ github.event_name != 'pull_request' }}
+            type=raw,value=bookworm,enable=${{ github.event_name != 'pull_request' }}
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3

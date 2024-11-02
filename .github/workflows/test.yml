@@ -4,7 +4,10 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  push:
+  workflow_run:
+    workflows: ["bookworm image CI"]
+    types:
+      - completed
     branches: trunk
     paths:
     - 'entrypoint.sh'
@@ -13,15 +16,6 @@ on:
     - '!**.md'
     - 'action.yml'
     - '**test.yml'
-  pull_request:
-    branches: trunk
-    paths:
-    - 'entrypoint.sh'
-    - '**Dockerfile'
-    - '!**.yml'
-    - '!**.md'
-    - 'action.yml'
-    - 'test.yml'
 
 jobs:
   build-deb:

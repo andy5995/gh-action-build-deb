@@ -32,7 +32,7 @@ runs:
           -e INPUT_SOURCES="${{ inputs.sources }}" \
           -e INPUT_PPA="${{ inputs.ppa }}" \
           -e INPUT_ARGS="${{ inputs.args }}" \
-          ghcr.io/${{ github.repository_owner }}/gh-action-build-deb:bookworm
+          ${{ github.event_name == 'pull_request' && format('ghcr.io/{0}:pr-{1}', github.repository, github.event.pull_request.number) || format('ghcr.io/{0}:bookworm', github.repository) }}
       shell: bash
 
 branding:
