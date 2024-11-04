@@ -20,6 +20,10 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - uses: actions/checkout@v4
+      with:
+        repository: andy5995/gh-action-build-deb
+        path: _gh-action-build-deb
     - name: Setup QEMU
       if: ${{ !contains(inputs.platform, 'amd64') }}
       uses: docker/setup-qemu-action@v3
