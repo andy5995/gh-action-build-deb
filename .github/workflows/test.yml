@@ -4,15 +4,7 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  push:
-    branches: trunk
-    paths:
-    - 'entrypoint.sh'
-    - '**Dockerfile'
-    - '!**.yml'
-    - '!**.md'
-    - 'action.yml'
-    - '**test.yml'
+  workflow_dispatch:
   pull_request:
     branches: trunk
     paths:
@@ -21,7 +13,7 @@ on:
     - '!**.yml'
     - '!**.md'
     - 'action.yml'
-    - 'test.yml'
+    - '**test.yml'
 
 jobs:
   build-deb:
@@ -30,9 +22,10 @@ jobs:
         platform:
           - amd64
           - arm64
-          - 386
 
     runs-on: ubuntu-latest
+    env:
+      ACTION_DIR: '_action_test'
     steps:
     - name: Checkout rmw
       uses: actions/checkout@v4
@@ -45,8 +38,38 @@ jobs:
 
     - uses: actions/checkout@v4
       with:
-        path: action
-    - uses: ./action
+        path: ${{ env.ACTION_DIR }}
+        fetch-depth: 0
+
+    - name: Check if Dockerfile or entrypoint.sh has changed
+      run: |
+        cd $ACTION_DIR
+        FILES=$(git log -1 -p ./ | grep +++ | cut -d '/' -f 2-| sed -e 's|dev/null||g')
+        if echo "$FILES" | grep -qE "^(Dockerfile|entrypoint.sh)$"; then
+          echo "changed=true" >> $GITHUB_ENV
+        else
+          echo "changed=false" >> $GITHUB_ENV
+        fi
+
+    - name: Set up QEMU
+      if: ${{ matrix.platform != 'amd64' && env.changed == 'true' }}
+      uses: docker/setup-qemu-action@v3
+
+    - name: Build docker image
+      if: ${{ env.changed == 'true' }}
+      run: |
+        cd "$ACTION_DIR"
+        docker build \
+          --platform linux/${{ matrix.platform }} \
+          -t ghcr.io/${{ github.repository_owner }}/gh-action-build-deb:bookworm \
+          .
+
+# Apparently variables aren't allowed with the 'uses' key?
+#
+# Invalid workflow file: .github/workflows/test.yml#L47
+# The workflow is not valid. .github/workflows/test.yml (Line: 47, Col: 13):
+# Unrecognized named-value: 'env'. Located at position 1 within expression: env.ACTION_DIR
+    - uses: ./_action_test
       with:
         args: |
           --no-sign
