@@ -45,14 +45,16 @@ jobs:
     - uses: actions/checkout@v4
       with:
         path: ${{ env.ACTION_DIR }}
-        fetch-depth: 2
+        fetch-depth: 0  # Fetch full history to ensure trunk is available
 
     - name: Check if Dockerfile or entrypoint.sh has changed
       run: |
         echo "do_build=false" >> $GITHUB_ENV
         if [ "${{ github.ref }}" != "refs/heads/trunk" ]; then
           cd $ACTION_DIR
-          FILES=$(git diff --name-only HEAD~1 HEAD)
+          git fetch origin trunk
+          FILES=$(git diff --name-only origin/trunk HEAD)
+          echo $FILES
           if echo "$FILES" | grep -qE "^(Dockerfile|entrypoint\.sh)$"; then
             echo "do_build=true" >> $GITHUB_ENV
           fi
