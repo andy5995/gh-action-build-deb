@@ -34,7 +34,7 @@ runs:
           -v ${{ github.workspace }}:/workspace \
           -w /workspace \
           --platform linux/${{ inputs.platform }} \
-          -e CODENAME="$CODENAME" \
+          -e INPUT_CODENAME="$CODENAME" \
           -e INPUT_SOURCES="${{ inputs.sources }}" \
           -e INPUT_PPA="${{ inputs.ppa }}" \
           -e INPUT_ARGS="${{ inputs.args }}" \

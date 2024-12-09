@@ -4,7 +4,7 @@ if [ -n "$INPUT_SOURCES" ]; then
     echo $INPUT_SOURCES >> /etc/apt/sources.list
 fi
 if [ -n "$INPUT_PPA" ]; then
-    if [ "$CODENAME" = "bookworm" ]; then
+    if [ "$INPUT_CODENAME" != "trixie" ]; then
         add-apt-repository "ppa:$INPUT_PPA" -y
     else
         # software-properties-common (package that contains add-apt-repository)
