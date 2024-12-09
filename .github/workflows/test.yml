@@ -52,7 +52,7 @@ jobs:
         echo "do_build=false" >> $GITHUB_ENV
         if [ "${{ github.ref }}" != "refs/heads/trunk" ]; then
           cd $ACTION_DIR
-          git fetch origin trunk
+          git fetch origin trunk --depth=1
           FILES=$(git diff --name-only origin/trunk HEAD)
           echo $FILES
           if echo "$FILES" | grep -qE "^(Dockerfile|entrypoint\.sh)$"; then
@@ -114,7 +114,7 @@ jobs:
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ env.DEB_FILENAME }}
+        name: ${{ env.DEB_FILENAME }}-${{ matrix.codename }}
         path: |
           output/*.deb
           *deb.sha256sum
