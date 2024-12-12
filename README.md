@@ -39,7 +39,7 @@ jobs:
     - name: Copy debian directory
       run: cp -a packaging/debian .
 
-    - uses: andy5995/gh-action-build-deb@v1.1.0
+    - uses: andy5995/gh-action-build-deb@v1
       with:
         args: |
           --no-sign
