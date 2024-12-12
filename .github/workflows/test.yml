@@ -20,13 +20,11 @@ jobs:
     strategy:
       fail-fast: true # TODO: change this so it can be an input
       matrix:
-#        codename: [bookworm, trixie]
-        codename: [bookworm]
-#        platform: [amd64, arm64, riscv64]
-        platform: [amd64]
-        #exclude:
-          #- codename: bookworm
-            #platform: riscv64
+        codename: [bookworm, trixie]
+        platform: [amd64, arm64, riscv64]
+        exclude:
+          - codename: bookworm
+            platform: riscv64
     runs-on: ubuntu-latest
     env:
       ACTION_DIR: '_action_test'

@@ -23,15 +23,7 @@ inputs:
 
 runs:
   using: 'composite'
-  env:
-    BUILD_DEB_ACTION_PATH: build-deb-action-${{ github.sha }}
   steps:
-    - uses: actions/checkout@v4
-      with:
-        path: ${{ env.BUILD_DEB_ACTION_PATH }}
-        repository: andy5995/gh-action-build-deb
-        ref: v1
-
     - name: Setup QEMU
       if: ${{ !contains(inputs.platform, 'amd64') }}
       uses: docker/setup-qemu-action@v3
@@ -46,7 +38,6 @@ runs:
           -e INPUT_SOURCES="${{ inputs.sources }}" \
           -e INPUT_PPA="${{ inputs.ppa }}" \
           -e INPUT_ARGS="${{ inputs.args }}" \
-          -v $BUILD_DEB_ACTION_PATH/entrypoint.sh:/entrypoint.sh \
           ghcr.io/andy5995/gh-action-build-deb:$CODENAME
       shell: bash
 
