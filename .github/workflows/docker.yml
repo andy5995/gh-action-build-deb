@@ -34,8 +34,7 @@ jobs:
             platform: linux/riscv64
 
       fail-fast: true
-    env:
-      DIGEST_DIR: /tmp/digests-${{ matrix.codename }}
+
     steps:
       -
         name: Prepare
@@ -82,15 +81,15 @@ jobs:
       -
         name: Export digest
         run: |
-          mkdir -p "$DIGEST_DIR"
+          mkdir -p /tmp/digests
           digest="${{ steps.build.outputs.digest }}"
-          touch "$DIGEST_DIR/${digest#sha256:}"
+          touch "/tmp/digests/${digest#sha256:}"
       -
         name: Upload digest
         uses: actions/upload-artifact@v4
         with:
-          name: digests-${{ env.PLATFORM_PAIR }}
-          path: ${{ env.DIGEST_DIR }}/*
+          name: digests-${{ matrix.codename }}-${{ env.PLATFORM_PAIR }}
+          path: /tmp/digests/*
           if-no-files-found: error
           retention-days: 1
 
@@ -106,15 +105,14 @@ jobs:
       matrix:
         codename: [bookworm, trixie]
       fail-fast: true
-    env:
-      DIGEST_DIR: /tmp/digests-${{ matrix.codename }}
+
     steps:
       -
         name: Download digests
         uses: actions/download-artifact@v4
         with:
-          path: ${{ env.DIGEST_DIR }}
-          pattern: digests-*
+          path: /tmp/digests
+          pattern: digests-${{ matrix.codename }}-*
           merge-multiple: true
       -
         name: Set up Docker Buildx
