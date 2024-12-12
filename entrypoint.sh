@@ -1,5 +1,8 @@
 #!/bin/bash
 set -e
+
+echo "Test mount"
+exit 0
 if [ -n "$INPUT_SOURCES" ]; then
     echo $INPUT_SOURCES >> /etc/apt/sources.list
 fi
