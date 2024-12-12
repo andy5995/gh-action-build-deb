@@ -68,7 +68,7 @@ jobs:
 
     386
     amd64
-    riscv64
+    riscv64 (using 'trixie' only)
     arm64
     arm/v7
     ppc64le
