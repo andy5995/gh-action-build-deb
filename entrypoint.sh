@@ -4,7 +4,22 @@ if [ -n "$INPUT_SOURCES" ]; then
     echo $INPUT_SOURCES >> /etc/apt/sources.list
 fi
 if [ -n "$INPUT_PPA" ]; then
-    add-apt-repository "ppa:$INPUT_PPA" -y
+    if [ "$INPUT_CODENAME" != "trixie" ]; then
+        add-apt-repository "ppa:$INPUT_PPA" -y
+    else
+        # software-properties-common (package that contains add-apt-repository)
+        # has been removed from testing
+        # https://tracker.debian.org/pkg/software-properties
+        #
+        # Extract repository name from INPUT_PPA (e.g., "ppa:repo-name" -> "repo-name")
+        repo_name=$(echo "$INPUT_PPA" | cut -d: -f2)
+
+        # Add the PPA to the sources list
+        echo "deb http://ppa.launchpad.net/$repo_name/ubuntu $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/$repo_name.list
+
+        # Import the GPG key for the PPA
+        apt-key adv --keyserver keyserver.ubuntu.com --recv-keys "$(curl -fsSL https://keyserver.ubuntu.com/pks/lookup?search=0x$repo_name | grep pub -m1 | awk '{print $2}')"
+    fi
 fi
 
 apt update && apt upgrade -y

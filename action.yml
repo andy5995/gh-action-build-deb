@@ -12,6 +12,10 @@ inputs:
   args:
     description: 'Arguments to pass to dpkg-buildpackage'
     required: false
+  codename:
+    description: 'Debian codename'
+    reqired: false
+    default: 'bookworm'
   platform:
     description: 'Target architecture'
     required: false
@@ -25,14 +29,16 @@ runs:
       uses: docker/setup-qemu-action@v3
     - name: Build Debian package
       run: |
+        CODENAME="${{ inputs.codename }}"
         docker run --rm \
           -v ${{ github.workspace }}:/workspace \
           -w /workspace \
           --platform linux/${{ inputs.platform }} \
+          -e INPUT_CODENAME="$CODENAME" \
           -e INPUT_SOURCES="${{ inputs.sources }}" \
           -e INPUT_PPA="${{ inputs.ppa }}" \
           -e INPUT_ARGS="${{ inputs.args }}" \
-          ghcr.io/andy5995/gh-action-build-deb:bookworm
+          ghcr.io/andy5995/gh-action-build-deb:$CODENAME
       shell: bash
 
 branding:

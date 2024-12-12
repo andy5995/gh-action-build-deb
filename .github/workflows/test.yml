@@ -18,20 +18,29 @@ on:
 jobs:
   build-deb:
     strategy:
+      fail-fast: true # TODO: change this so it can be an input
       matrix:
-        platform:
-          - amd64
-          - arm64
-
+        codename: [bookworm, trixie]
+        platform: [amd64, arm64, riscv64]
+        exclude:
+          - codename: bookworm
+            platform: riscv64
     runs-on: ubuntu-latest
     env:
       ACTION_DIR: '_action_test'
     steps:
+    - name: Prepare
+      run: |
+        platform=${{ matrix.platform }}
+        PLATFORM_PAIR="${platform//\//-}"
+        echo "PLATFORM_PAIR=${PLATFORM_PAIR}" >> $GITHUB_ENV
+        echo "DOCKER_CACHE_DEST=${{ github.workspace }}/.docker/buildx-cache-${{ matrix.codename }}-$PLATFORM_PAIR" >> $GITHUB_ENV
+
     - name: Checkout rmw
       uses: actions/checkout@v4
       with:
         repository: theimpossibleastronaut/rmw
-        ref: v0.9.2
+        ref: v0.9.3
 
     - name: Copy debian directory
       run: cp -a packaging/debian .
@@ -39,30 +48,51 @@ jobs:
     - uses: actions/checkout@v4
       with:
         path: ${{ env.ACTION_DIR }}
-        fetch-depth: 0
+        fetch-depth: 0  # Fetch full history to ensure trunk is available
 
     - name: Check if Dockerfile or entrypoint.sh has changed
       run: |
-        cd $ACTION_DIR
-        FILES=$(git log -1 -p ./ | grep +++ | cut -d '/' -f 2-| sed -e 's|dev/null||g')
-        if echo "$FILES" | grep -qE "^(Dockerfile|entrypoint.sh)$"; then
-          echo "changed=true" >> $GITHUB_ENV
-        else
-          echo "changed=false" >> $GITHUB_ENV
+        echo "do_build=false" >> $GITHUB_ENV
+        if [ "${{ github.ref }}" != "refs/heads/trunk" ]; then
+          cd $ACTION_DIR
+          git fetch origin trunk --depth=1
+          FILES=$(git diff --name-only origin/trunk HEAD)
+          echo $FILES
+          if echo "$FILES" | grep -qE "^(Dockerfile|entrypoint\.sh)$"; then
+            echo "do_build=true" >> $GITHUB_ENV
+          fi
         fi
 
+    - name: Cache Docker layers
+      if: ${{ env.do_build == 'true' }}
+      id: docker-cache
+      uses: actions/cache@v4
+      with:
+        path: ${{ env.DOCKER_CACHE_DEST }}
+        key: ${{ runner.os }}-docker-${{ github.ref_name }}-${{ matrix.codename }}-${{ env.PLATFORM_PAIR }}
+        restore-keys: |
+          ${{ runner.os }}-docker-${{ matrix.codename }}-${{ env.PLATFORM_PAIR }}
+
     - name: Set up QEMU
-      if: ${{ matrix.platform != 'amd64' && env.changed == 'true' }}
+      if: ${{ matrix.platform != 'amd64' && env.do_build == 'true' }}
       uses: docker/setup-qemu-action@v3
 
+    - name: Set up Docker Buildx
+      if: ${{ env.do_build == 'true' }}
+      uses: docker/setup-buildx-action@v3
+
     - name: Build docker image
-      if: ${{ env.changed == 'true' }}
+      if: ${{ env.do_build == 'true' }}
       run: |
         cd "$ACTION_DIR"
-        docker build \
+        docker buildx build \
+          . \
+          --build-arg CODENAME=${{ matrix.codename }} \
           --platform linux/${{ matrix.platform }} \
-          -t ghcr.io/${{ github.repository_owner }}/gh-action-build-deb:bookworm \
-          .
+          -t ghcr.io/${{ github.repository_owner }}/gh-action-build-deb:${{ matrix.codename }} \
+          --cache-to=type=local,dest=${{ env.DOCKER_CACHE_DEST }} \
+          --cache-from=type=local,src=${{ env.DOCKER_CACHE_DEST }} \
+          --load
 
 # Apparently variables aren't allowed with the 'uses' key?
 #
@@ -71,6 +101,7 @@ jobs:
 # Unrecognized named-value: 'env'. Located at position 1 within expression: env.ACTION_DIR
     - uses: ./_action_test
       with:
+        codename: ${{ matrix.codename }}
         args: |
           --no-sign
           --compression=xz
@@ -86,7 +117,7 @@ jobs:
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ env.DEB_FILENAME }}
+        name: ${{ env.DEB_FILENAME }}-${{ matrix.codename }}
         path: |
           output/*.deb
           *deb.sha256sum
