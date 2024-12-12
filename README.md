@@ -24,6 +24,9 @@ jobs:
   build-deb:
     strategy:
       matrix:
+        codename:
+          - trixie
+          - bookworm
         platform:
           - amd64
           - arm64
@@ -41,6 +44,7 @@ jobs:
         args: |
           --no-sign
           --compression=xz
+        codename: ${{ matrix.codename }}
         platform: ${{ matrix.platform }}
 
     - name: Create sha256sum
@@ -64,6 +68,7 @@ jobs:
 
     386
     amd64
+    riscv64 (using 'trixie' only)
     arm64
     arm/v7
     ppc64le
@@ -82,6 +87,10 @@ jobs:
   args:
     description: 'Arguments to pass to dpkg-buildpackage'
     required: false
+  codename:
+    description: 'Debian codename'
+    reqired: false
+    default: 'bookworm'
   platform:
     description: 'Target architecture'
     required: false
