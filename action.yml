@@ -14,7 +14,7 @@ inputs:
     required: false
   codename:
     description: 'Debian codename'
-    reqired: false
+    required: false
     default: 'bookworm'
   platform:
     description: 'Target architecture'
