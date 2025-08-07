@@ -38,7 +38,7 @@ runs:
           -e INPUT_SOURCES="${{ inputs.sources }}" \
           -e INPUT_PPA="${{ inputs.ppa }}" \
           -e INPUT_ARGS="${{ inputs.args }}" \
-          ghcr.io/${GITHUB_ACTION_REPOSITORY}:$CODENAME
+          ghcr.io/andy5995/gh-action-build-deb:$CODENAME
       shell: bash
 
 branding:
