@@ -72,6 +72,7 @@ jobs:
     arm64
     arm/v7
     ppc64le
+    s390x
 
 ## Optional arguments
 
