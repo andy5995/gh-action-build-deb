@@ -21,7 +21,7 @@ jobs:
       fail-fast: true # TODO: change this so it can be an input
       matrix:
         codename: [bookworm, trixie]
-        platform: [amd64, arm64, riscv64]
+        platform: [amd64, arm64, riscv64, s390x]
         exclude:
           - codename: bookworm
             platform: riscv64
