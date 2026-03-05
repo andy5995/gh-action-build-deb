@@ -79,7 +79,7 @@ jobs:
 
     - name: Set up Docker Buildx
       if: ${{ env.do_build == 'true' }}
-      uses: docker/setup-buildx-action@v3
+      uses: docker/setup-buildx-action@v4
 
     - name: Build docker image
       if: ${{ env.do_build == 'true' }}
