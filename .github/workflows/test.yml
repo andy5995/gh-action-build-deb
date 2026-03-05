@@ -75,7 +75,7 @@ jobs:
 
     - name: Set up QEMU
       if: ${{ matrix.platform != 'amd64' && env.do_build == 'true' }}
-      uses: docker/setup-qemu-action@v3
+      uses: docker/setup-qemu-action@v4
 
     - name: Set up Docker Buildx
       if: ${{ env.do_build == 'true' }}
