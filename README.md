@@ -90,12 +90,20 @@ jobs:
     required: false
   codename:
     description: 'Debian codename'
-    reqired: false
+    required: false
     default: 'bookworm'
   platform:
     description: 'Target architecture'
     required: false
     default: 'amd64'
+  lintian_check:
+    description: 'Run lintian on the built package'
+    required: false
+    default: 'false'
+  fail_on_lintian_error:
+    description: 'Fail the action if lintian reports errors (only applies when lintian_check is true)'
+    required: false
+    default: 'true'
 ```
 
 ## Related actions
