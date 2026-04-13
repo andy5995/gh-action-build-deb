@@ -35,6 +35,16 @@ dpkg-buildpackage $INPUT_ARGS
 # Output the filename
 cd ..
 ls -l
+
+if [ "$INPUT_LINTIAN_CHECK" = "true" ]; then
+    lintian_exit_code=0
+    lintian *.changes || lintian_exit_code=$?
+    if [ "$INPUT_FAIL_ON_LINTIAN_ERROR" != "false" ] && [ "$lintian_exit_code" -ne 0 ]; then
+        echo "lintian check failed (exit code $lintian_exit_code)"
+        exit "$lintian_exit_code"
+    fi
+fi
+
 mkdir -p /workspace/output/
 # Move the built package into the Docker mounted workspace
 mv -v *.{deb,dsc,changes,buildinfo,tar.*} /workspace/output/

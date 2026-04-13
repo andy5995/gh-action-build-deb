@@ -8,7 +8,8 @@ RUN \
     build-essential \
     debhelper \
     devscripts \
-    equivs && \
+    equivs \
+    lintian && \
     if [ "$CODENAME" = "bookworm" ]; then \
       apt install -y software-properties-common; \
     fi

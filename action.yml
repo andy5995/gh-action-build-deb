@@ -20,6 +20,14 @@ inputs:
     description: 'Target architecture'
     required: false
     default: 'amd64'
+  lintian_check:
+    description: 'Run lintian on the built package'
+    required: false
+    default: 'false'
+  fail_on_lintian_error:
+    description: 'Fail the action if lintian reports errors (only applies when lintian_check is true)'
+    required: false
+    default: 'true'
 
 runs:
   using: 'composite'
@@ -38,6 +46,8 @@ runs:
           -e INPUT_SOURCES="${{ inputs.sources }}" \
           -e INPUT_PPA="${{ inputs.ppa }}" \
           -e INPUT_ARGS="${{ inputs.args }}" \
+          -e INPUT_LINTIAN_CHECK="${{ inputs.lintian_check }}" \
+          -e INPUT_FAIL_ON_LINTIAN_ERROR="${{ inputs.fail_on_lintian_error }}" \
           ghcr.io/andy5995/gh-action-build-deb:$CODENAME
       shell: bash
 
