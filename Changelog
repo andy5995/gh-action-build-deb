@@ -1,9 +1,11 @@
-1.2.0 (2026-04-13)
+
+gh-action-build-deb (in-progress):
 ------------------
+  * Fix running dpkg as root
+  * Added lintian to the Docker image
   * Added lintian_check option to run lintian on the built package
   * Added fail_on_lintian_error option to control whether a lintian failure
     fails the action (default: true, only applies when lintian_check is true)
-  * Added lintian to the Docker image
 
 1.1.0 (2024-12-12)
 ------------------
