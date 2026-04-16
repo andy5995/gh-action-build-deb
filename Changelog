@@ -9,6 +9,10 @@
   * Include major version in Docker image tags (e.g. bookworm-v1) so images
     from prior major releases remain available after a version bump
 
+1.1.1 (2025-10-23)
+------------------
+  + Add support for s390x (closes #18) by @andy5995 in #19
+
 1.1.0 (2024-12-12)
 ------------------
   * Added support for building trixie packages
