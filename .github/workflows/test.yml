@@ -28,6 +28,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ACTION_DIR: '_action_test'
+      # Keep in sync with docker.yml MAJOR_VERSION when cutting a major release.
+      MAJOR_VERSION: v1
     steps:
     - name: Prepare
       run: |
@@ -89,7 +91,7 @@ jobs:
           . \
           --build-arg CODENAME=${{ matrix.codename }} \
           --platform linux/${{ matrix.platform }} \
-          -t ghcr.io/${{ github.repository_owner }}/gh-action-build-deb:${{ matrix.codename }} \
+          -t ghcr.io/${{ github.repository_owner }}/gh-action-build-deb:${{ matrix.codename }}-${{ env.MAJOR_VERSION }} \
           --cache-to=type=local,dest=${{ env.DOCKER_CACHE_DEST }} \
           --cache-from=type=local,src=${{ env.DOCKER_CACHE_DEST }} \
           --load
@@ -105,6 +107,8 @@ jobs:
         args: |
           --no-sign
           --compression=xz
+        lintian_check: true
+        fail_on_lintian_error: false
         platform: ${{ matrix.platform }}
 
     - name: Create sha256sum
