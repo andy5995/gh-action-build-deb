@@ -1,4 +1,4 @@
-name: bookworm image CI
+name: Image CI
 
 on:
   push:

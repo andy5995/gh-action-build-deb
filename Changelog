@@ -1,5 +1,5 @@
 
-gh-action-build-deb (in-progress):
+1.2.0 (2026-04-16):
 ------------------
   * Fix running dpkg as root
   * Added lintian to the Docker image
