@@ -48,7 +48,7 @@ runs:
           -e INPUT_ARGS="${{ inputs.args }}" \
           -e INPUT_LINTIAN_CHECK="${{ inputs.lintian_check }}" \
           -e INPUT_FAIL_ON_LINTIAN_ERROR="${{ inputs.fail_on_lintian_error }}" \
-          ghcr.io/andy5995/gh-action-build-deb:$CODENAME
+          ghcr.io/andy5995/gh-action-build-deb:${CODENAME}-v1
       shell: bash
 
 branding:

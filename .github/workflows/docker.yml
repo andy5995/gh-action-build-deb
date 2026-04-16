@@ -14,6 +14,8 @@ on:
 
 env:
   REGISTRY_IMAGE: ghcr.io/${{ github.repository_owner }}/gh-action-build-deb
+  # Bump this when cutting a new major release so old images remain available.
+  MAJOR_VERSION: v1
 
 jobs:
   build:
@@ -127,6 +129,7 @@ jobs:
           tags: |
             type=raw,value=latest,enable=${{ matrix.codename == 'trixie' }}
             type=raw,value=${{ matrix.codename }}
+            type=raw,value=${{ matrix.codename }}-${{ env.MAJOR_VERSION }}
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v4

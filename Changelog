@@ -6,6 +6,8 @@ gh-action-build-deb (in-progress):
   * Added lintian_check option to run lintian on the built package
   * Added fail_on_lintian_error option to control whether a lintian failure
     fails the action (default: true, only applies when lintian_check is true)
+  * Include major version in Docker image tags (e.g. bookworm-v1) so images
+    from prior major releases remain available after a version bump
 
 1.1.0 (2024-12-12)
 ------------------
