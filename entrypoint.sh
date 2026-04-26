@@ -56,9 +56,13 @@ runuser -u builder -- bash -c "
 
 ls -l "$WORK_DIR"
 
-lintian_exit_code=0
 if [ "$INPUT_LINTIAN_CHECK" = "true" ]; then
-    CHANGES=$(ls "$WORK_DIR"/*.changes | head -n1)
+    CHANGES=$(find "$WORK_DIR" -maxdepth 1 -name "*.changes" | head -n1)
+    if [ -z "$CHANGES" ]; then
+        echo "lintian check requested but no .changes file found in $WORK_DIR"
+        exit 1
+    fi
+    lintian_exit_code=0
     runuser -u builder -- lintian "$CHANGES" || lintian_exit_code=$?
     if [ "$INPUT_FAIL_ON_LINTIAN_ERROR" != "false" ] && [ "$lintian_exit_code" -ne 0 ]; then
         echo "lintian check failed (exit code $lintian_exit_code)"
