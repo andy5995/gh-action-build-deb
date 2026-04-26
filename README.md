@@ -11,9 +11,9 @@ This is a fork of
 This Action will build both a source package and then a binary package and
 place them in a `output/` directory.
 
-The 'debian' directory containing the files required to create a Debian
-package must be in the source root directory (in the example below, it's
-copied to the source root directory before the action is run).
+The action downloads the upstream source archive from `archive_url`, extracts
+it, and copies the `debian/` packaging directory (from `debian_path` in your
+checked-out repository) into the extracted source tree before building.
 
 ## Example
 <!-- Don't forget to check the version after the action when copying and pasting -->
@@ -24,9 +24,6 @@ jobs:
   build-deb:
     strategy:
       matrix:
-        codename:
-          - trixie
-          - bookworm
         platform:
           - amd64
           - arm64
@@ -36,15 +33,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Copy debian directory
-      run: cp -a packaging/debian .
-
-    - uses: andy5995/gh-action-build-deb@v1
+    - uses: andy5995/gh-action-build-deb@v2
       with:
+        archive_url: https://example.com/myproject-1.0.tar.gz
+        debian_path: packaging/debian
         args: |
           --no-sign
           --compression=xz
-        codename: ${{ matrix.codename }}
         platform: ${{ matrix.platform }}
 
     - name: Create sha256sum
@@ -68,11 +63,22 @@ jobs:
 
     386
     amd64
-    riscv64 (using 'trixie' only)
+    riscv64
     arm64
     arm/v7
     ppc64le
     s390x
+
+## Required inputs
+
+```
+  archive_url:
+    description: 'URL of the upstream source release archive'
+    required: true
+  debian_path:
+    description: 'Relative path (within the workspace) to the debian/ packaging directory'
+    required: true
+```
 
 ## Optional arguments
 
@@ -91,7 +97,7 @@ jobs:
   codename:
     description: 'Debian codename'
     required: false
-    default: 'bookworm'
+    default: 'trixie'
   platform:
     description: 'Target architecture'
     required: false

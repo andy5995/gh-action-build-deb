@@ -3,8 +3,8 @@ FROM debian:$CODENAME-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN \
-  apt update && apt upgrade -y && \
-  apt install -y \
+  apt update && \
+  apt install -y --no-install-recommends \
     build-essential \
     curl \
     debhelper \

@@ -20,16 +20,15 @@ jobs:
     strategy:
       fail-fast: true # TODO: change this so it can be an input
       matrix:
-        codename: [bookworm, trixie]
+        codename: [trixie, forky]
         platform: [amd64, arm64, riscv64]
-        exclude:
-          - codename: bookworm
-            platform: riscv64
+
     runs-on: ubuntu-latest
     env:
       ACTION_DIR: '_action_test'
       # Keep in sync with docker.yml MAJOR_VERSION when cutting a major release.
-      MAJOR_VERSION: v1
+      MAJOR_VERSION: v2
+      RMW_VER: 0.9.5
     steps:
     - name: Prepare
       run: |
@@ -42,10 +41,7 @@ jobs:
       uses: actions/checkout@v6
       with:
         repository: theimpossibleastronaut/rmw
-        ref: v0.9.3
-
-    - name: Copy debian directory
-      run: cp -a packaging/debian .
+        ref: v${{ env.RMW_VER }}
 
     - uses: actions/checkout@v6
       with:
@@ -103,6 +99,8 @@ jobs:
 # Unrecognized named-value: 'env'. Located at position 1 within expression: env.ACTION_DIR
     - uses: ./_action_test
       with:
+        archive_url: https://github.com/theimpossibleastronaut/rmw/releases/download/v${{ env.RMW_VER }}/rmw-${{ env.RMW_VER }}.tar.xz
+        debian_path: packaging/debian
         codename: ${{ matrix.codename }}
         args: |
           --no-sign

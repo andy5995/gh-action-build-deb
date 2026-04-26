@@ -1,6 +1,12 @@
 name: 'Build Debian package on multiple architectures'
 description: 'Build Debian package on multiple architectures'
 inputs:
+  archive_url:
+    description: 'URL of the upstream source release archive'
+    required: true
+  debian_path:
+    description: 'Relative path (within the workspace) to the debian/ packaging directory'
+    required: true
   sources:
     description: 'Any extra sources to add to apt'
     required: false
@@ -15,7 +21,7 @@ inputs:
   codename:
     description: 'Debian codename'
     required: false
-    default: 'bookworm'
+    default: 'trixie'
   platform:
     description: 'Target architecture'
     required: false
@@ -42,13 +48,15 @@ runs:
           -v ${{ github.workspace }}:/workspace \
           -w /workspace \
           --platform linux/${{ inputs.platform }} \
+          -e INPUT_ARCHIVE_URL="${{ inputs.archive_url }}" \
+          -e INPUT_DEBIAN_PATH="${{ inputs.debian_path }}" \
           -e INPUT_CODENAME="$CODENAME" \
           -e INPUT_SOURCES="${{ inputs.sources }}" \
           -e INPUT_PPA="${{ inputs.ppa }}" \
           -e INPUT_ARGS="${{ inputs.args }}" \
           -e INPUT_LINTIAN_CHECK="${{ inputs.lintian_check }}" \
           -e INPUT_FAIL_ON_LINTIAN_ERROR="${{ inputs.fail_on_lintian_error }}" \
-          ghcr.io/andy5995/gh-action-build-deb:${CODENAME}-v1
+          ghcr.io/andy5995/gh-action-build-deb:${CODENAME}-v2
       shell: bash
 
 branding:
