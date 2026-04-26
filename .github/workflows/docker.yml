@@ -20,7 +20,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: ${{ matrix.platform }}-image
+    name: ${{ matrix.platform }}-${{ matrix.codename }}-image
     strategy:
       matrix:
         codename: [trixie, forky]
@@ -100,9 +100,10 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - build
+    name: ${{ matrix.platform }}-${{ matrix.codename }}-image
     strategy:
       matrix:
-        codename: [trixie]
+        codename: [trixie, forky]
       fail-fast: true
 
     steps:

@@ -6,10 +6,12 @@ RUN \
   apt update && apt upgrade -y && \
   apt install -y \
     build-essential \
+    curl \
     debhelper \
     devscripts \
     equivs \
-    lintian
+    lintian \
+    zstd
 
 RUN sed -i 's/Types: deb/Types: deb deb-src/' /etc/apt/sources.list.d/debian.sources
 
