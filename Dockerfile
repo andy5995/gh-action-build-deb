@@ -1,4 +1,4 @@
-ARG CODENAME=bookworm
+ARG CODENAME=trixie
 FROM debian:$CODENAME-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -9,10 +9,7 @@ RUN \
     debhelper \
     devscripts \
     equivs \
-    lintian && \
-    if [ "$CODENAME" = "bookworm" ]; then \
-      apt install -y software-properties-common; \
-    fi
+    lintian
 
 RUN sed -i 's/Types: deb/Types: deb deb-src/' /etc/apt/sources.list.d/debian.sources
 
