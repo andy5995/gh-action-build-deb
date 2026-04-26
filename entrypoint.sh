@@ -21,18 +21,12 @@ WORK_DIR=$(mktemp -d /tmp/deb-work.XXXXXX)
 ARCHIVE="$WORK_DIR/source.tar"
 curl -fsSL "$INPUT_ARCHIVE_URL" -o "$ARCHIVE"
 
-# Detect archive type and extract
-file_magic=$(file -b "$ARCHIVE")
-case "$file_magic" in
-    *gzip*)      tar -xzf "$ARCHIVE" -C "$WORK_DIR" ;;
-    *bzip2*)     tar -xjf "$ARCHIVE" -C "$WORK_DIR" ;;
-    *XZ*)        tar -xJf "$ARCHIVE" -C "$WORK_DIR" ;;
-    *Zstandard*) tar --zstd -xf "$ARCHIVE" -C "$WORK_DIR" ;;
-    *tar*|*POSIX*) tar -xf "$ARCHIVE" -C "$WORK_DIR" ;;
-    *)
-        echo "Unsupported archive type: $file_magic"
-        exit 1
+case "$INPUT_ARCHIVE_URL" in
+    *.zip)
+        apt install -y --no-install-recommends unzip
+        unzip "$ARCHIVE" -d "$WORK_DIR"
         ;;
+    *) tar -xf "$ARCHIVE" -C "$WORK_DIR" ;;
 esac
 
 rm "$ARCHIVE"
