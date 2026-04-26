@@ -1,3 +1,10 @@
+2.0.0 (in-progress):
+------------------
+  * Breaking change: replaced workspace-as-source model with archive_url and
+    debian_path inputs; action now downloads the upstream source archive,
+    extracts it, and copies the debian/ directory from the workspace into it
+  * Breaking change: default codename the package is built on is now 'trixie'
+    and 'bookworm' support has been removed
 
 1.2.0 (2026-04-16):
 ------------------
