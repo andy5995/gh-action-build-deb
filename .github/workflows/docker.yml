@@ -9,13 +9,13 @@ on:
     - 'entrypoint.sh'
   workflow_dispatch:
   schedule:
-    - cron: '30 11 20 */3 *'
+    - cron: '30 11 18 */3 *'
 
 
 env:
   REGISTRY_IMAGE: ghcr.io/${{ github.repository_owner }}/gh-action-build-deb
   # Bump this when cutting a new major release so old images remain available.
-  MAJOR_VERSION: v1
+  MAJOR_VERSION: v2
 
 jobs:
   build:
@@ -23,7 +23,7 @@ jobs:
     name: ${{ matrix.platform }}-image
     strategy:
       matrix:
-        codename: [bookworm, trixie]
+        codename: [trixie]
         platform:
           - linux/386
           - linux/amd64
@@ -32,9 +32,6 @@ jobs:
           - linux/ppc64le
           - linux/riscv64
           - linux/s390x
-        exclude:
-          - codename: bookworm
-            platform: linux/riscv64
 
       fail-fast: true
 
@@ -105,7 +102,7 @@ jobs:
       - build
     strategy:
       matrix:
-        codename: [bookworm, trixie]
+        codename: [trixie]
       fail-fast: true
 
     steps:
