@@ -2,7 +2,7 @@ name: Image CI
 
 on:
   push:
-    branches: trunk
+    branches: v1-develop
     paths:
     - '**Dockerfile'
     - '**docker.yml'
