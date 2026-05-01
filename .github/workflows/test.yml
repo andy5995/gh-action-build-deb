@@ -97,6 +97,7 @@ jobs:
 # Invalid workflow file: .github/workflows/test.yml#L47
 # The workflow is not valid. .github/workflows/test.yml (Line: 47, Col: 13):
 # Unrecognized named-value: 'env'. Located at position 1 within expression: env.ACTION_DIR
+    # @@BEGIN_EXAMPLE@@
     - uses: ./_action_test
       with:
         archive_url: https://github.com/theimpossibleastronaut/rmw/releases/download/v${{ env.RMW_VER }}/rmw-${{ env.RMW_VER }}.tar.xz
@@ -124,3 +125,4 @@ jobs:
           output/*.deb
           *deb.sha256sum
         if-no-files-found: error
+    # @@END_EXAMPLE@@
