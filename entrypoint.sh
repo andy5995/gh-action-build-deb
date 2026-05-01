@@ -14,29 +14,55 @@ INPUT_ARGS="${INPUT_ARGS//$'\n'/ }"
 
 apt update && apt upgrade -y
 
-# Set the install command to be used by mk-build-deps (use --yes for non-interactive)
 install_tool="apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes"
-# Install build dependencies automatically
-mk-build-deps -i -r --tool="${install_tool}" debian/control
 
-# dpkg-buildpackage writes output files (*.deb, *.changes, etc.) to the
-# parent of the source directory. Copy the source into a staging area
-# owned by builder so both the source dir and its parent are writable.
-STAGING=$(mktemp -d /tmp/deb-build.XXXXXX)
-SRC_COPY="$STAGING/$(basename "$PWD")"
-cp -a "$PWD/." "$SRC_COPY"
-chown -R builder:builder "$STAGING"
+# Download the source archive
+WORK_DIR=$(mktemp -d /tmp/deb-work.XXXXXX)
+ARCHIVE="$WORK_DIR/source.tar"
+curl -fsSL "$INPUT_ARCHIVE_URL" -o "$ARCHIVE"
+
+case "$INPUT_ARCHIVE_URL" in
+    *.zip)
+        apt install -y --no-install-recommends unzip
+        unzip "$ARCHIVE" -d "$WORK_DIR"
+        ;;
+    *) tar -xf "$ARCHIVE" -C "$WORK_DIR" ;;
+esac
+
+rm "$ARCHIVE"
+
+# Find the top-level extracted directory
+SOURCE_DIR=$(find "$WORK_DIR" -mindepth 1 -maxdepth 1 -type d | head -n1)
+if [ -z "$SOURCE_DIR" ]; then
+    echo "No directory found after extracting archive"
+    ls -la "$WORK_DIR"
+    exit 1
+fi
+
+# Copy debian packaging files from workspace into the source tree
+cp -a "/workspace/$INPUT_DEBIAN_PATH" "$SOURCE_DIR/debian"
+
+# Install build dependencies
+mk-build-deps -i -r --tool="${install_tool}" "$SOURCE_DIR/debian/control"
+
+# dpkg-buildpackage writes output files to the parent of the source directory;
+# WORK_DIR serves as that parent. Set ownership so builder can write everywhere.
+chown -R builder:builder "$WORK_DIR"
 
 runuser -u builder -- bash -c "
-  cd '$SRC_COPY' &&
+  cd '$SOURCE_DIR' &&
   dpkg-buildpackage -rfakeroot $INPUT_ARGS
 "
 
-ls -l "$STAGING"
+ls -l "$WORK_DIR"
 
-lintian_exit_code=0
 if [ "$INPUT_LINTIAN_CHECK" = "true" ]; then
-    CHANGES=$(ls "$STAGING"/*.changes | head -n1)
+    CHANGES=$(find "$WORK_DIR" -maxdepth 1 -name "*.changes" | head -n1)
+    if [ -z "$CHANGES" ]; then
+        echo "lintian check requested but no .changes file found in $WORK_DIR"
+        exit 1
+    fi
+    lintian_exit_code=0
     runuser -u builder -- lintian "$CHANGES" || lintian_exit_code=$?
     if [ "$INPUT_FAIL_ON_LINTIAN_ERROR" != "false" ] && [ "$lintian_exit_code" -ne 0 ]; then
         echo "lintian check failed (exit code $lintian_exit_code)"
@@ -45,8 +71,7 @@ if [ "$INPUT_LINTIAN_CHECK" = "true" ]; then
 fi
 
 mkdir -p /workspace/output/
-# Move the built packages into the Docker mounted workspace
-for f in "$STAGING"/*.deb "$STAGING"/*.dsc "$STAGING"/*.changes \
-         "$STAGING"/*.buildinfo "$STAGING"/*.tar.*; do
+for f in "$WORK_DIR"/*.deb "$WORK_DIR"/*.dsc "$WORK_DIR"/*.changes \
+         "$WORK_DIR"/*.buildinfo "$WORK_DIR"/*.tar.*; do
     [ -f "$f" ] && mv -v "$f" /workspace/output/
 done

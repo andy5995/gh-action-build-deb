@@ -31,34 +31,9 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@@CHECKOUT_VERSION@
 
-    - uses: andy5995/gh-action-build-deb@v2
-      with:
-        archive_url: https://example.com/myproject-1.0.tar.gz
-        debian_path: packaging/debian
-        args: |
-          --no-sign
-          --compression=xz
-        lintian_check: true
-        fail_on_lintian_error: false
-        platform: ${{ matrix.platform }}
-
-    - name: Create sha256sum
-      run: |
-        DEB_FILENAME=$(basename `find output/*deb`)
-        echo "DEB_FILENAME=$DEB_FILENAME" >> $GITHUB_ENV
-        cd output
-        sha256sum "$DEB_FILENAME" > "../$DEB_FILENAME.sha256sum"
-
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v7
-      with:
-        name: ${{ env.DEB_FILENAME }}
-        path: |
-          output/*.deb
-          *deb.sha256sum
-        if-no-files-found: error
+@@EXAMPLE@@
 ```
 
 ## Supported Architectures
