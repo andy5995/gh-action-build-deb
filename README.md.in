@@ -46,48 +46,9 @@ jobs:
     ppc64le
     s390x
 
-## Required inputs
+## Inputs
 
-```
-  archive_url:
-    description: 'URL of the upstream source release archive'
-    required: true
-  debian_path:
-    description: 'Relative path (within the workspace) to the debian/ packaging directory'
-    required: true
-```
-
-## Optional arguments
-
-```
-  sources:
-    description: 'Any extra sources to add to apt'
-    required: false
-    default: ''
-  ppa:
-    description: 'An extra PPA to add to apt (no ppa: prefix)'
-    required: false
-    default: ''
-  args:
-    description: 'Arguments to pass to dpkg-buildpackage'
-    required: false
-  codename:
-    description: 'Debian codename'
-    required: false
-    default: 'trixie'
-  platform:
-    description: 'Target architecture'
-    required: false
-    default: 'amd64'
-  lintian_check:
-    description: 'Run lintian on the built package'
-    required: false
-    default: 'false'
-  fail_on_lintian_error:
-    description: 'Fail the action if lintian reports errors (only applies when lintian_check is true)'
-    required: false
-    default: 'true'
-```
+See [action.yml](action.yml) for all available inputs and their descriptions.
 
 ## Related actions
 
