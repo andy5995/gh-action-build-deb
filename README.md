@@ -40,6 +40,8 @@ jobs:
         args: |
           --no-sign
           --compression=xz
+        lintian_check: true
+        fail_on_lintian_error: false
         platform: ${{ matrix.platform }}
 
     - name: Create sha256sum

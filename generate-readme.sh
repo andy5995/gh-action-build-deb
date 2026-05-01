@@ -14,8 +14,6 @@ awk '/@@BEGIN_EXAMPLE@@/{found=1; next} /@@END_EXAMPLE@@/{found=0} found{print}'
     -e "s|\./_action_test|andy5995/gh-action-build-deb@${MAJOR_VERSION}|" \
     -e 's|archive_url:.*|archive_url: https://example.com/myproject-1.0.tar.gz|' \
     -e '/codename: \${{ matrix.codename }}/d' \
-    -e '/lintian_check:/d' \
-    -e '/fail_on_lintian_error:/d' \
     -e 's|name: \${{ env.DEB_FILENAME }}-\${{ matrix.codename }}|name: ${{ env.DEB_FILENAME }}|' \
   > "$tmpfile"
 
