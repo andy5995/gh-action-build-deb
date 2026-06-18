@@ -39,7 +39,7 @@ jobs:
         echo "DOCKER_CACHE_DEST=${{ github.workspace }}/.docker/buildx-cache-${{ matrix.codename }}-$PLATFORM_PAIR" >> $GITHUB_ENV
 
     - name: Checkout rmw
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         repository: theimpossibleastronaut/rmw
         ref: v0.9.3
@@ -47,7 +47,7 @@ jobs:
     - name: Copy debian directory
       run: cp -a packaging/debian .
 
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         path: ${{ env.ACTION_DIR }}
         fetch-depth: 0  # Fetch full history to ensure trunk is available
